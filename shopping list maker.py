@@ -1,6 +1,19 @@
-from multiprocessing.connection import wait
-
-
+import os
+def clear():
+    os.system('cls')
+def show(list):
+    try:
+        print()
+        number = 0
+        for item in list:
+            number += 1
+            print(f'''\t{number}. {item}''')
+        if len(list) == 1:
+            print(f"\n\t\t{len(list)} item in list.\n")
+        else:
+            print(f"\n\t\t{len(list)} items in list.\n")
+    except:
+        return("List doesn't exist.")
 def checkInputs(input):
     try:
         input = int(input)
@@ -8,25 +21,11 @@ def checkInputs(input):
         print("\nError: input wasn't an integer")
         waitForUser()
     else:
-        if input >= 0 and input <=6:
+        if input >= 0 and input <=5:
             return input
         else:
             print("\nError: input wasn't an option, try again.")
             waitForUser()
-def inputByUser():
-    firstInput = input("""Choose an option:
-    
-    \t1 to create a new list
-    \t2 to add items to the list
-    \t3 to remove items from the list
-    \t4 to print list
-    \t5 to move items in list
-    \t6 to edit items
-    \t0 to exit
-    
-    \t\t- Type "back" to come back to this menu at any time
-    Input: """)
-    return firstInput
 def waitForUser():
     input("Press enter to continue...")
 def confirm():
@@ -51,9 +50,26 @@ def move(list, index, to):
 def cancelling():
     print("Cancelling operation. Returning to main menu...\n")
     waitForUser()
-print("\nShopping List Maker")
 while True:
-    userInput = inputByUser()
+    clear()
+    print(f"""Shopping list maker
+    Choose an option:
+    
+    \t1 to create a new list
+    \t2 to add items to the list
+    \t3 to remove items from the list
+    \t4 to move items in list
+    \t5 to edit items
+    \t0 to exit
+    
+    \t\t- Type "back" to come back to this menu at any time""")
+    try:
+        if len(list) != 0:
+            print("Current list:")
+            show(list)
+    except:
+        print()
+    userInput = input("Input: ")
     userInput = checkInputs(userInput)
     if userInput == 1:
         if confirm() == True:
@@ -77,117 +93,116 @@ while True:
                 waitForUser()
             else:
                 print("Item added successfully!")
-    elif userInput == 3:
-        listPos = input("\nWhat position is the item in that you want to delete?\n\tInput: ")
-        if listPos.lower() == "back":
-            cancelling()
-        else:
-            try:
-                listPos = int(listPos)
-            except:
-                print("Input wasn't an integer, try again.")
                 waitForUser()
-                continue
-            else:
-                try:
-                    index = listPos - 1
-                except:
-                    print("Error deleting item from list. Does the list exist?")
-                    waitForUser()
-                else:
-                    try:
-                        print(f'The item selected is "{list[index]}".')
-                    except:
-                        print("Error selecting item.")
-                    else:
-                        if confirm() == True:
-                            try:
-                                del list[index]
-                            except:
-                                print("Error deleting item from list. Is the item selected out of bounds?")
-                            else:
-                                print("Item deleted.")
-                                waitForUser()
-                        else:            
-                            print("Cancelling operation...")
-                            waitForUser()
-                            continue
-    elif userInput == 4:
+    elif userInput == 3:
         try:
-            print()
-            number = 1
-            for item in list:
-                print(f'''\t{number}. {item}''')
-                number += 1
-            if len(list) == 1:
-                print(f"\n{len(list)} item in list.\n")
-            else:
-                print(f"\n{len(list)} items in list.\n")
-            waitForUser()
-        except:
-            print("Error printing list. Does the list exist?")
-            waitForUser()
-    elif userInput == 5:
-        if len(list) != 0:
-            fromWhat = input("\tWhat position is the item in that you want to move?\n\t\tInput: ")
-            try:
-                fromWhat = int(fromWhat)
-            except:
-                if fromWhat.lower() == "back":
+            if len(list):
+                listPos = input("\nWhat position is the item in that you want to delete?\n\tInput: ")
+                if listPos.lower() == "back":
                     cancelling()
                 else:
-                    print("\nInput wasn't an integer. Try again!\n")
-                    waitForUser()
-            else:
-                toWhat = input("\tTo what position do you want to move the item?\n\t\tInput: ")
+                    try:
+                        listPos = int(listPos)
+                    except:
+                        print("Input wasn't an integer, try again.")
+                        waitForUser()
+                        continue
+                    else:
+                        try:
+                            index = listPos - 1
+                        except:
+                            print("Error deleting item from list. Does the list exist?")
+                            waitForUser()
+                        else:
+                            try:
+                                print(f'The item selected is "{list[index]}".')
+                            except:
+                                print("Error selecting item. Is it out of bounds?")
+                                waitForUser()
+                            else:
+                                if confirm() == True:
+                                    try:
+                                        del list[index]
+                                    except:
+                                        print("Error deleting item from list.")
+                                        waitForUser()
+                                    else:
+                                        print("Item deleted.")
+                                        waitForUser()
+                                else:            
+                                    print("Cancelling operation...")
+                                    waitForUser()
+                                    continue
+        except:
+            print("List doesn't exist. Try again!")
+            waitForUser()                        
+    elif userInput == 4:
+        try:
+            if len(list):
+                fromWhat = input("\tWhat position is the item in that you want to move?\n\t\tInput: ")
                 try:
-                    toWhat = int(toWhat)
+                    fromWhat = int(fromWhat)
                 except:
-                    if toWhat.lower() == "back":
+                    if fromWhat.lower() == "back":
                         cancelling()
                     else:
                         print("\nInput wasn't an integer. Try again!\n")
                         waitForUser()
                 else:
+                    toWhat = input("\tTo what position do you want to move the item?\n\t\tInput: ")
                     try:
-                        move(list, fromWhat, toWhat)
+                        toWhat = int(toWhat)
                     except:
-                        print("Error moving item.\n")
-                        waitForUser()
+                        if toWhat.lower() == "back":
+                            cancelling()
+                        else:
+                            print("\nInput wasn't an integer. Try again!\n")
+                            waitForUser()
                     else:
-                        print("Item moved successfully!\n")
-                        waitForUser()
-        else:
-            print("List doesn't exist or is empty. Try again!")
+                        if fromWhat > len(list) or toWhat > len(list):
+                            print("Out of bounds!")
+                            waitForUser()
+                        else:
+                            try:
+                                move(list, fromWhat, toWhat)
+                            except:
+                                print("Error moving item.\n")
+                                waitForUser()
+                            else:
+                                print("Item moved successfully!\n")
+                                waitForUser()
+        except:
+            print("List doesn't exist. Try again!")
             waitForUser()
-    elif userInput == 6:
-        if len(list) != 0:
-            indexEdit = input("What position is the item in that you want to edit?")
-            try:
-                indexEdit = int(indexEdit)
-            except:
-                if indexEdit == "back":
-                    cancelling()
-                else:
-                    print("Input wasn't an integer. Try again!")
-                    waitForUser()
-            else:
-                realIndex = indexEdit - 1
-                original = list[realIndex]
-                edited = input(f"\n\tWhat would you like {original} to be edited to?\n\t\tInput: ")
-                print(f'"{original}" will be edited to "{edited}."')
-                if confirm() == True:
-                    try:
-                        del list[realIndex]
-                        list.insert(realIndex, edited)
-                    except:
-                        print("Error editing item.")
-                        waitForUser()
+    elif userInput == 5:
+        try:
+            if len(list):
+                indexEdit = input("What position is the item in that you want to edit?\nInput: ")
+                try:
+                    indexEdit = int(indexEdit)
+                except:
+                    if indexEdit == "back":
+                        cancelling()
                     else:
-                        print("Item edited successfully!")
+                        print("Input wasn't an integer. Try again!")
                         waitForUser()
-        else:
-            print("List doesn't exist or is empty. Try again!")
+                else:
+                    realIndex = indexEdit - 1
+                    original = list[realIndex]
+                    edited = input(f"\n\tWhat would you like {original} to be edited to?\n\t\tInput: ")
+                    print(f'"{original}" will be edited to "{edited}."')
+                    if confirm() == True:
+                        try:
+                            del list[realIndex]
+                            list.insert(realIndex, edited)
+                        except:
+                            print("Error editing item.")
+                            waitForUser()
+                        else:
+                            print("Item edited successfully!")
+                            waitForUser()
+        except:
+            print("List doesn't exist. Try again!")
             waitForUser()
     elif userInput == 0:
         if confirm() == True:
