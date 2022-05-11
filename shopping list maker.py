@@ -5,22 +5,23 @@ def checkInputs(input):
         print("\nError: input wasn't an integer")
         waitForUser()
     else:
-        if input == 0 or input == 1 or input == 2 or input == 3 or input == 4 or input == 5:
+        if input == 0 or input == 1 or input == 2 or input == 3 or input == 4 or input == 5 or input == 6:
             return input
         else:
             print("\nError: input wasn't an option, try again.")
 def inputByUser():
-    firstInput = input('''Choose an option:
+    firstInput = input("""Choose an option:
     
     \t1 to create a new list
     \t2 to add items to the list
     \t3 to remove items from the list
     \t4 to print list
     \t5 to move items in list
+    \t6 to edit items
     \t0 to exit
     
     \t\t- Type "back" to come back to this menu at any time
-    Input: ''')
+    Input: """)
     return firstInput
 def waitForUser():
     input("Press enter to continue...")
@@ -52,7 +53,7 @@ while True:
     userInput = checkInputs(userInput)
     if userInput == 1:
         if confirm() == True:
-            newList = []
+            list = []
             print("\nNew list created.")
             waitForUser()
         else:
@@ -66,7 +67,7 @@ while True:
             waitForUser()
         else:
             try:
-                newList.append(appended)
+                list.append(appended)
             except:        
                 print("\nError adding item to list. Does the list exist?")
                 waitForUser()
@@ -91,13 +92,13 @@ while True:
                     waitForUser()
                 else:
                     try:
-                        print(f'The item selected is "{newList[index]}".')
+                        print(f'The item selected is "{list[index]}".')
                     except:
                         print("Error selecting item.")
                     else:
                         if confirm() == True:
                             try:
-                                del newList[index]
+                                del list[index]
                             except:
                                 print("Error deleting item from list. Is the item selected out of bounds?")
                             else:
@@ -111,13 +112,13 @@ while True:
         try:
             print()
             number = 1
-            for item in newList:
+            for item in list:
                 print(f'''\t{number}. {item}''')
                 number += 1
-            if len(newList) == 1:
-                print(f"\n{len(newList)} item in list.\n")
+            if len(list) == 1:
+                print(f"\n{len(list)} item in list.\n")
             else:
-                print(f"\n{len(newList)} items in list.\n")
+                print(f"\n{len(list)} items in list.\n")
             waitForUser()
         except:
             print("Error printing list. Does the list exist?")
@@ -144,15 +145,36 @@ while True:
                     waitForUser()
             else:
                 try:
-                    if toWhat.lower() == "back":
-                        cancelling()
+                    move(list, fromWhat, toWhat)
                 except:
-                    try:
-                        move(newList, fromWhat, toWhat)
-                    except:
-                        print("Error moving item.\n")
-                    else:
-                        print("Item moved successfully!\n")
+                    print("Error moving item.\n")
+                else:
+                    print("Item moved successfully!\n")
+    elif userInput == 6:
+        indexEdit = input("What position is the item in that you want to edit?")
+        try:
+            indexEdit = int(indexEdit)
+        except:
+            if indexEdit == "back":
+                cancelling()
+            else:
+                print("Input wasn't an integer. Try again!")
+                waitForUser()
+        else:
+            realIndex = indexEdit - 1
+            original = list[realIndex]
+            edited = input(f"\n\tWhat would you like {original} to be edited to?\n\t\tInput: ")
+            print(f'"{original}" will be edited to "{edited}."')
+            if confirm() == True:
+                try:
+                    del list[realIndex]
+                    list.insert(realIndex, edited)
+                except:
+                    print("Error editing item.")
+                    waitForUser()
+                else:
+                    print("Item edited successfully!")
+                    waitForUser()
     elif userInput == 0:
         if confirm() == True:
             print("Exiting program...")
